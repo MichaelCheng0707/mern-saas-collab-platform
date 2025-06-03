@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/saas
+    depends_on: # 等 mongo 啟動後才啟動
+      - mongo
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
